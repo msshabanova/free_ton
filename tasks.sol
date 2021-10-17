@@ -71,6 +71,7 @@ contract tasks {
         delete number[key].name;
         delete number[key].timestamp;
         delete number[key].flag;
+        delete Array[key];
     }
     function  keyTask(uint8 key) public checkOwnerAndAccept{
         require(key>0 && key<=Array.length);
