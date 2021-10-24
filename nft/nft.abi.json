@@ -1,0 +1,84 @@
+{
+	"ABI version": 2,
+	"version": "2.1",
+	"header": ["time", "expire"],
+	"functions": [
+		{
+			"name": "addBook",
+			"inputs": [
+				{"name":"title","type":"string"},
+				{"name":"authorName","type":"string"},
+				{"name":"numberOfPages","type":"uint256"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "getBookOwner",
+			"inputs": [
+				{"name":"bookId","type":"uint256"}
+			],
+			"outputs": [
+				{"name":"value0","type":"uint256"}
+			]
+		},
+		{
+			"name": "getBookInfo",
+			"inputs": [
+				{"name":"bookId","type":"uint256"}
+			],
+			"outputs": [
+				{"name":"bookTitle","type":"string"},
+				{"name":"bookAuthor","type":"string"},
+				{"name":"pagesNum","type":"uint256"}
+			]
+		},
+		{
+			"name": "putUpForSale",
+			"inputs": [
+				{"name":"bookId","type":"uint256"},
+				{"name":"price","type":"uint256"}
+			],
+			"outputs": [
+				{"name":"value0","type":"uint256"}
+			]
+		},
+		{
+			"name": "changePrice",
+			"inputs": [
+				{"name":"bookId","type":"uint256"},
+				{"name":"newPrice","type":"uint256"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "changeBookName",
+			"inputs": [
+				{"name":"bookId","type":"uint256"},
+				{"name":"newBookOwner","type":"uint256"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "constructor",
+			"inputs": [
+			],
+			"outputs": [
+			]
+		}
+	],
+	"data": [
+	],
+	"events": [
+	],
+	"fields": [
+		{"name":"_pubkey","type":"uint256"},
+		{"name":"_timestamp","type":"uint64"},
+		{"name":"_constructorFlag","type":"bool"},
+		{"components":[{"name":"title","type":"string"},{"name":"authorName","type":"string"},{"name":"numberOfPages","type":"uint256"}],"name":"books","type":"tuple[]"},
+		{"name":"bookToOwner","type":"map(uint256,uint256)"},
+		{"name":"bookPrice","type":"map(uint256,uint256)"}
+	]
+}
