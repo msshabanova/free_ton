@@ -1,0 +1,114 @@
+{
+	"ABI version": 2,
+	"version": "2.1",
+	"header": ["time", "expire"],
+	"functions": [
+		{
+			"name": "constructor",
+			"inputs": [
+				{"name":"AddressBasicStation","type":"address"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "getPowerAttack",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"value0","type":"uint256"}
+			]
+		},
+		{
+			"name": "getProttectionPower",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"value0","type":"uint256"}
+			]
+		},
+		{
+			"name": "deathBecauseOfBase",
+			"inputs": [
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "getPowerOfProtection",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"value0","type":"uint256"}
+			]
+		},
+		{
+			"name": "getAttack",
+			"inputs": [
+				{"name":"damage","type":"uint256"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "death",
+			"inputs": [
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "addWarUnit",
+			"inputs": [
+				{"name":"addressWarUnit","type":"address"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "deleteWarUnit",
+			"inputs": [
+				{"name":"addressWarUnit","type":"address"}
+			],
+			"outputs": [
+			]
+		},
+		{
+			"name": "HP",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"HP","type":"uint256"}
+			]
+		},
+		{
+			"name": "AttackAddress",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"AttackAddress","type":"address"}
+			]
+		},
+		{
+			"name": "attackPower",
+			"inputs": [
+			],
+			"outputs": [
+				{"name":"attackPower","type":"uint256"}
+			]
+		}
+	],
+	"data": [
+	],
+	"events": [
+	],
+	"fields": [
+		{"name":"_pubkey","type":"uint256"},
+		{"name":"_timestamp","type":"uint64"},
+		{"name":"_constructorFlag","type":"bool"},
+		{"name":"HP","type":"uint256"},
+		{"name":"AttackAddress","type":"address"},
+		{"name":"ThisAddressBasicStation","type":"address"},
+		{"name":"attackPower","type":"uint256"}
+	]
+}
