@@ -25,23 +25,27 @@ abstract contract AbstractDebotListInit is Debot, Upgradable{
 
     bytes m_icon;
 
-    TvmCell m_todoCode;
+    TvmCell m_shoppingStateInit;
+    TvmCell m_shoppingCode;
+    TvmCell m_shoppingData;
     uint256 m_masterPubKey; // User pubkey
     address m_address;  // ShoppingListSmartContract address
     address m_msigAddress;  // User wallet address
     uint32 INITIAL_BALANCE =  200000000;  // Initial ShoppingListSmartContract balance
-    SummaryOfShopping m_summary;        // Statistics of incompleted and completed tasks 
-    uint32 m_purchaseId;    // Task id for update.
+    SummaryOfShopping m_summary;        // Statistics  
+    uint32 m_purchaseId;    
 
 
     function start() public override {
         Terminal.input(tvm.functionId(savePublicKey),"Please enter your public key",false);
     }
     
-    function setTodoCode(TvmCell code) public {
+    function setShoppingCode(TvmCell code, TvmCell data) public {
         require(msg.pubkey() == tvm.pubkey(), 101);
         tvm.accept();
-        m_todoCode = code;
+        m_shoppingCode = code;
+        m_shoppingData = data;
+        m_shoppingStateInit = tvm.buildStateInit(m_shoppingCode, m_shoppingData);
     }
 
     function savePublicKey(string value) public {
@@ -50,7 +54,7 @@ abstract contract AbstractDebotListInit is Debot, Upgradable{
                 m_masterPubKey = res;
 
                 Terminal.print(0, "Checking if you already have a Shopping list ...");
-                TvmCell deployState = tvm.insertPubkey(m_todoCode, m_masterPubKey);
+                TvmCell deployState = tvm.insertPubkey(m_shoppingStateInit, m_masterPubKey);
                 m_address = address.makeAddrStd(0, tvm.hash(deployState));
                 Terminal.print(0, format( "Info: your ShoppingList contract address is {}", m_address));
                 Sdk.getAccountType(tvm.functionId(checkStatus), m_address);
@@ -104,10 +108,10 @@ abstract contract AbstractDebotListInit is Debot, Upgradable{
 
 
     function waitBeforeDeploy() public  {
-        Sdk.getAccountType(tvm.functionId(checkIfStatusIs0), m_address);
+        Sdk.getAccountType(tvm.functionId(checkIfAccountDeploed), m_address);
     }
 
-    function checkIfStatusIs0(int8 acc_type) public {
+    function checkIfAccountDeploed(int8 acc_type) public {
         if (acc_type ==  0) {
             deploy();
         } else {
@@ -116,7 +120,7 @@ abstract contract AbstractDebotListInit is Debot, Upgradable{
     }
 
     function deploy() private view {
-            TvmCell image = tvm.insertPubkey(m_todoCode, m_masterPubKey);
+            TvmCell image = tvm.insertPubkey(m_shoppingStateInit, m_masterPubKey);
             optional(uint256) none;
             TvmCell deployMsg = tvm.buildExtMsg({
                 abiVer: 2,
@@ -175,13 +179,13 @@ abstract contract AbstractDebotListInit is Debot, Upgradable{
         string name, string version, string publisher, string key, string author,
         address support, string hello, string language, string dabi, bytes icon
     ) {
-        name = "TODO DeBot";
-        version = "0.2.0";
-        publisher = "TON Labs";
-        key = "TODO list manager";
-        author = "TON Labs";
+        name = "Shopping List DeBot";
+        version = "1.0";
+        publisher = "Mariia Shabanova";
+        key = "Shopping list manager";
+        author = "Mariia Shabanova";
         support = address.makeAddrStd(0, 0x66e01d6df5a8d7677d9ab2daf7f258f1e2a7fe73da5320300395f99e01dc3b5f);
-        hello = "Hi, i'm a TODO DeBot.";
+        hello = "Hi, i'm a Shopping List DeBot.";
         language = "en";
         dabi = m_debotAbi.get();
         icon = m_icon;
@@ -194,22 +198,5 @@ abstract contract AbstractDebotListInit is Debot, Upgradable{
         tvm.resetStorage();
     }
     
-    //     string sep = '----------------------------------------';
-    //     Menu.select(
-    //         format(
-    //             "You have {}/{}/{} (todo/done/total) tasks",
-    //                 m_summary.incompleteCount,
-    //                 m_summary.completeCount,
-    //                 m_summary.completeCount + m_summary.incompleteCount
-    //         ),
-    //         sep,
-    //         [
-    //             MenuItem("Create new task","",tvm.functionId(createTask)),
-    //             MenuItem("Show task list","",tvm.functionId(showTasks)),
-    //             MenuItem("Update task status","",tvm.functionId(updateTask)),
-    //             MenuItem("Delete task","",tvm.functionId(deleteTask))
-    //         ]
-    //     );
-    // }
 
 }

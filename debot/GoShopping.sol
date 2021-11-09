@@ -15,7 +15,6 @@ import "ShoppingListStructures.sol";
 contract GoShopping is AbstractDebotListInit {
 
     string purchaseName;
-    bool flag;
     
     function _menu() internal override{
         string sep = '----------------------------------------';
@@ -30,7 +29,7 @@ contract GoShopping is AbstractDebotListInit {
             [
                 MenuItem("Show purchase list","",tvm.functionId(showPurchase)),
                 MenuItem("Delete task","",tvm.functionId(deletePurchase)),
-                MenuItem("Add new purchase","",tvm.functionId(buy))
+                MenuItem("Add new purchase","",tvm.functionId(buyToKnowPurchesNumber))
             ]
         );
     }
@@ -95,34 +94,34 @@ contract GoShopping is AbstractDebotListInit {
             }(uint32(num));
     }
 
-    function buy (uint32 index) public {
+    function buyToKnowPurchesNumber (uint32 index) public {
         index = index;
         if (m_summary.paidCount + m_summary.unpaidCount > 0) {
-            Terminal.input(tvm.functionId(buy_), "Enter purchase number:", false);
+            Terminal.input(tvm.functionId(buyToKnowPurchesNumber_), "Enter purchase number:", false);
         } else {
             Terminal.print(0, "Sorry, you have no purchases to buy");
             _menu();
         }
     }
 
-    function buy_(string value) public {
+    function buyToKnowPurchesNumber_(string value) public {
         (uint256 num,) = stoi(value);
         m_purchaseId = uint32(num);
-        if (!purchasesMapping[m_purchaseId].isBought){
-            ConfirmInput.get(tvm.functionId(buyPrice),"Is this purchasekId made?");
+        ConfirmInput.get(tvm.functionId(buyToKnowPrice),"Is this purchase yuo want to buy?");
+    }
+
+    function buyToKnowPrice(bool value) public {
+        if (value){
+            Terminal.input(tvm.functionId(buy_), "Enter purchase price:", false);
         }
+            _menu();
     }
 
-    function buyPrice(bool value) public {
-        flag = value;
-        (uint256 num,) = stoi(value);
-        m_purchasekId = uint32(num);
-        ConfirmInput.get(tvm.functionId(buyPrice),"Is this purchasekId made?");
-    }
-
-    function updateTask__(bool value) public view {
+    function buy_ (string price) public view {
+        (uint256 purchasePRice,)= stoi(price);
+        uint64 purchasePrice = uint64(purchasePRice);
         optional(uint256) pubkey = 0;
-        ITodo(m_address).updateTask{
+        ShoppingListInterface(m_address).buy{
                 abiVer: 2,
                 extMsg: true,
                 sign: true,
@@ -131,7 +130,7 @@ contract GoShopping is AbstractDebotListInit {
                 expire: 0,
                 callbackId: tvm.functionId(onSuccess),
                 onErrorId: tvm.functionId(onError)
-            }(m_taskId, value);
+            }(m_purchaseId, purchasePrice);
     }
 
     function setStat(SummaryOfShopping summary) public override {
