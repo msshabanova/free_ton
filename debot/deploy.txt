@@ -1,0 +1,60 @@
+tondev sol compile ShoppingListSmartContract.sol
+tonos-cli decode stateinit ShoppingListSmartContract.tvc --tvc
+сохранить ShoppingListSmartContract.decode.json
+{
+    "split_depth": "None",
+    "special": "None",
+    "data": "te6ccgEBAgEAKAABAcABAEPQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAg",
+    "code": "te6ccgECHgEAA9EABCSK7VMg4wMgwP/jAiDA/uMC8gsbAgEdApAh2zzTAAGOEoECANcYIPkBWPhCIPhl+RDyqN7TPwH4QyG58rQg+COBA+iogggbd0CgufK0+GPTHwH4I7zyudMfAds8+Edu8nwZAwE6ItDXCwOpOADcIccA3CHXDR/yvCHdAds8+Edu8nwDAiggghBYJHPYu+MCIIIQf5mlUrvjAgwEAiggghBY2FsquuMCIIIQf5mlUrrjAgkFA4ow+EJu4wDR2zwhjjEj0NMB+kAwMcjPhyDOjQQAAAAAAAAAAAAAAAAP+ZpVKM8WAW8jXiDLH8sfyz/JcPsAkTDi4wB/+GcaBhgCSnBfIG8DcF8g+EwggCD0hoqTbW1t4pMibrOOgOhfBF8ybwM0XwMIBwFMIG8UnSaktR83IG8VJaC1PzWVJaS1HzbiUyOAIPR8ipNtbW3ibDMIACAgWNMf1NMf0z/SANM/0W8GAyQw+EJu4wDTH9M/0ds82zx/+GcaChgEevhFIG6SMHDe+Eq68uBl+AAh+EyAIPQOIJEx3vLgZiH4TFyAIPQOioriI29V2zxZgCD0QyD4bCIBXIAg9A4REBYLAyCKiuJ/b1TbPFmAIPRD+GxbERAWBFAgghA8keHFuuMCIIIQP2HJQLrjAiCCEFSdPWS64wIgghBYJHPYuuMCFxQSDQOEMPhCbuMA0ds8IY4uI9DTAfpAMDHIz4cgzo0EAAAAAAAAAAAAAAAADYJHPYjPFgFvIgLLH/QAyXD7AJEw4uMAf/hnGg4YARxwbW8CcJQg+Eu7joDoMA8DOlz4TIAg9A6KiuLbPAFvIiGkVSCAIPRDbwIypLUfERAWAQ5wiHBfMG8GHQAc0x/U0x/TP9IA0z/RbwYDIDD4Qm7jANMf0ds82zx/+GcaExgATvhFIG6SMHDe+Eq68uBl+AAg+EyAIPQOIJEx3vLgZvhMgCD0WzD4bAMiMPhCbuMA1NMf0ds82zx/+GcaFRgBZvhFIG6SMHDe+Eq68uBl+ABwbW8C+EuktR8g+Gtd+CNwcG8G+Ev4TFjbPFmAIPRD+GxfAxYAIG8mXkDIyx/Myx/LP8oAyz8COjD4Qm7jAPhG8nN/+GbT/9Eg8uB4+AD4ats8f/hnGRgAOPhM+Ev4SvhG+EP4QsjL/8s/ygDL/8sf9ADJ7VQBVu1E0NdJwgGKjiBw7UTQ9AVw+Gpw+Gtt+GyAQPQO8r3XC//4YnD4Y3D4ZuIaADjtRNDT/9M/0gDT/9Mf9ATR+Gz4a/hq+Gb4Y/hiAgr0pCD0oR0cABRzb2wgMC40Ny4wAAA=",
+    "code_hash": "425981246b04c44d53500f25fb6f916792f9bde6df4d0455fb19fbb2e69c2b39",
+    "data_hash": "55a703465a160dce20481375de2e5b830c841c2787303835eb5821d62d65ca9d",
+    "code_depth": "8",
+    "data_depth": "1",
+    "version": "sol 0.47.0",
+    "lib": ""
+  }
+
+tondev sol compile FillingShoppingList.sol
+tondev sol compile GoShopping.sol
+tonos-cli genaddr FillingShoppingList.tvc FillingShoppingList.abi.json --genkey FillingShoppingList.keys.json > logFillingShoppingList.log
+tonos-cli genaddr GoShopping.tvc GoShopping.abi.json --genkey GoShopping.keys.json > logGoShopping.log
+
+=- Заполнить файл params.json
+В моем случае:
+{
+    "dest": "0:41937d8d08c7a43471a091308eda6c0d1b3ba94ed3e96407a93d374226517d83",
+    "amount": 10000000000
+}
+
+Задеплоить
+tonos-cli --url https://net.ton.dev deploy FillingShoppingList.tvc "{}" --sign FillingShoppingList.keys.json --abi FillingShoppingList.abi.json
+tonos-cli --url https://net.ton.dev deploy GoShopping.tvc "{}" --sign GoShopping.keys.json --abi GoShopping.abi.json
+
++GIT
+cat FillingShoppingList.abi.json | xxd -p -c 20000
+cat GoShopping.abi.json | xxd -p -c 20000
+
+
++ Записать dabiFillingShoppingList.json - в моем случае:
+{
+    "dabi": "7b0d0a0........d0a7d0d0a"
+}
+
++ Записать dabiGoShopping.json - в моем случае:
+{
+    "dabi": "7b0d0a0........d0a7d0d0a"
+}
+
+Установить dabi
+tonos-cli --url https://net.ton.dev call 0:8964c6b3311908d72b001c49852ca666d7904e2478cfd58d108a9fae365bc195 setABI dabiFillingShoppingList.json --sign FillingShoppingList.keys.json --abi FillingShoppingList.abi.json
+tonos-cli --url https://net.ton.dev call 0:ddefd04905a5c85606999c3ec9add84d320577c7c743bb7a2070fe8fa487093c setABI dabiGoShopping.json --sign GoShopping.keys.json --abi GoShopping.abi.json
+!!!!!!!!!
+вызвать
+
+предварительно сформировать ShoppingListSmartContract.decode.json и 
+tonos-cli --url https://net.ton.dev call --abi FillingShoppingList.abi.json --sign FillingShoppingList.keys.json 0:8964c6b3311908d72b001c49852ca666d7904e2478cfd58d108a9fae365bc195 setShoppingCode ShoppingListSmartContract.decode.json
+tonos-cli --url https://net.ton.dev call --abi GoShopping.abi.json --sign GoShopping.keys.json 0:ddefd04905a5c85606999c3ec9add84d320577c7c743bb7a2070fe8fa487093c setShoppingCode ShoppingListSmartContract.decode.json
+
+Вызываем дебота
+https://web.ton.surf/debot?address=0%3A8964c6b3311908d72b001c49852ca666d7904e2478cfd58d108a9fae365bc195&net=devnet&restart=true
+https://web.ton.surf/debot?address=0%3Addefd04905a5c85606999c3ec9add84d320577c7c743bb7a2070fe8fa487093c&net=devnet&restart=true

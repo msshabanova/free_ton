@@ -5,7 +5,7 @@
 		{
 			"name": "addPurchaseName",
 			"inputs": [
-				{"name":"index","type":"bytes"}
+				{"name":"index","type":"uint32"}
 			],
 			"outputs": [
 			]

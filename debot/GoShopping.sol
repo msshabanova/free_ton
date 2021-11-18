@@ -28,8 +28,8 @@ contract GoShopping is AbstractDebotListInit {
             sep,
             [
                 MenuItem("Show purchase list","",tvm.functionId(showPurchase)),
-                MenuItem("Delete task","",tvm.functionId(deletePurchase)),
-                MenuItem("Add new purchase","",tvm.functionId(buyToKnowPurchesNumber))
+                MenuItem("Delete purchase","",tvm.functionId(deletePurchase)),
+                MenuItem("Buy","",tvm.functionId(buyToKnowPurchesNumber))
             ]
         );
     }
