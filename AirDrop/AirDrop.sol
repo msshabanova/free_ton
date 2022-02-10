@@ -53,11 +53,10 @@ contract Airdrop is CheckOwner, ITokensReceivedCallback {
 
 
 
-    function AirDrop(address clientAddress, address[] arrayAddresses, uint256 [] arrayValues) onlyOwner public returns (bool) {
+    function AirDrop(address[] arrayAddresses, uint256 [] arrayValues) onlyOwner public {
         require(arrayAddresses.length = arrayValues.length && arrayAddresses > 0, 102);
         uint256 count = arrayAddresses.length;
-        for (uint256 i = 0; i < count; i++)
-            {
+        for (uint256 i = 0; i < count; i++) {
         // calling transfer function from contract //
             TvmCell empty;
             ITONTokenWallet(token_wallet).transfer{
@@ -67,11 +66,11 @@ contract Airdrop is CheckOwner, ITokensReceivedCallback {
                 arrayAddresses [i],
                 arrayValues [i],
                 transfer_grams,
-                clientAddress,
+                msg.sender,
                 false,
                 empty
             );
-            }
+        }
     }
 
         
