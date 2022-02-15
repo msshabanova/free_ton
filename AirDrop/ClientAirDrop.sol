@@ -1,23 +1,40 @@
 
-ragma ton-solidity >= 0.39.0;
+pragma ton-solidity >= 0.35.0;
 pragma AbiHeader time;
 pragma AbiHeader expire;
 pragma AbiHeader pubkey;
 
-
+import "Interfaces/IRootTokenContract.sol";
 import "Interfaces/InterfaceAirDrop.sol";
 import "Interfaces/ITONTokenWallet.sol";
 import "Libraries/MsgFlag.sol";
 import "CheckOwner.sol";
 
 // This is class that describes you smart contract.
-contract ClientAirDrop is CheckOwner {
+contract ClientAirDrop  {
 
     address token;
     address token_wallet;
-    address AirDropAddress;
 
+    uint128 constant deploy_wallet_grams = 0.2 ton;
     uint128 constant transfer_grams = 0.5 ton;
+
+    address public owner;    
+    
+    function isInternalOwner(address forCheck) private inline view returns (bool) {
+        return owner != address(0) && forCheck == owner;
+    }
+
+    modifier checkOwnerAndAccept {
+        require(msg.pubkey() == tvm.pubkey() || isInternalOwner(msg.sender), 102);
+        tvm.accept();
+        _;
+    }
+
+    modifier checkOwner {
+        require(msg.pubkey() == tvm.pubkey(), 107);
+        _;
+    }
 
 
     constructor(address _token) public {
@@ -52,7 +69,7 @@ contract ClientAirDrop is CheckOwner {
         token_wallet = wallet;
     }
 
-    function transferTokensForAirDrop (address AirDropAddress, uint256 amount) public pure checkOwnerAndAccept {
+    function transferTokensForAirDrop (address AirDropAddress, uint128 amount) public view checkOwnerAndAccept {
 
         // Transfer tokens
         TvmCell empty;
@@ -77,7 +94,7 @@ contract ClientAirDrop is CheckOwner {
 
    
 
-    function doAirDrop  (address AirDropAddress,  address [] arrayAddresses, uint256 [] arrayValues) public pure checkOwnerAndAccept {
+    function doAirDrop  (address AirDropAddress,  address [] arrayAddresses, uint128 [] arrayValues) public pure checkOwnerAndAccept {
         InterfaseAirDrop(AirDropAddress).AirDrop (arrayAddresses, arrayValues);
     }
 

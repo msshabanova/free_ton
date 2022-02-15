@@ -3,14 +3,15 @@ pragma AbiHeader time;
 pragma AbiHeader expire;
 pragma AbiHeader pubkey;
 
+
+import "Interfaces/InterfaceAirDrop.sol";
 import "Interfaces/IRootTokenContract.sol";
 import "Interfaces/ITONTokenWallet.sol";
 import "Interfaces/ITokensReceivedCallback.sol";
 import "Libraries/MsgFlag.sol";
-import "CheckOwner.sol";
 
 // part of main Airdrop SC (edit what you need)
-contract Airdrop is CheckOwner, ITokensReceivedCallback {
+contract Airdrop is ITokensReceivedCallback, InterfaceAirDrop {
     address token;
     address token_wallet;
 
@@ -42,6 +43,23 @@ contract Airdrop is CheckOwner, ITokensReceivedCallback {
         uint128 payload_arg4;
     }
 
+    address public owner;    
+    
+    function isInternalOwner(address forCheck) private inline view returns (bool) {
+        return owner != address(0) && forCheck == owner;
+    }
+
+    modifier checkOwnerAndAccept {
+        require(msg.pubkey() == tvm.pubkey() || isInternalOwner(msg.sender), 102);
+        tvm.accept();
+        _;
+    }
+
+    modifier checkOwner {
+        require(msg.pubkey() == tvm.pubkey(), 107);
+        _;
+    }
+
     constructor(address _token) public {
         require(tvm.pubkey() != 0, 101);
         require(msg.pubkey() == tvm.pubkey(), 102);
@@ -53,8 +71,8 @@ contract Airdrop is CheckOwner, ITokensReceivedCallback {
 
 
 
-    function AirDrop(address[] arrayAddresses, uint256 [] arrayValues) onlyOwner public {
-        require(arrayAddresses.length = arrayValues.length && arrayAddresses > 0, 102);
+    function AirDrop(address[] arrayAddresses, uint128 [] arrayValues) public checkOwner override {
+        require(arrayAddresses.length == arrayValues.length && arrayAddresses.empty(), 102);
         uint256 count = arrayAddresses.length;
         for (uint256 i = 0; i < count; i++) {
         // calling transfer function from contract //
