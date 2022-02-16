@@ -8,7 +8,6 @@ import "Interfaces/IRootTokenContract.sol";
 import "Interfaces/InterfaceAirDrop.sol";
 import "Interfaces/ITONTokenWallet.sol";
 import "Libraries/MsgFlag.sol";
-import "CheckOwner.sol";
 
 // This is class that describes you smart contract.
 contract ClientAirDrop  {
@@ -95,7 +94,7 @@ contract ClientAirDrop  {
    
 
     function doAirDrop  (address AirDropAddress,  address [] arrayAddresses, uint128 [] arrayValues) public pure checkOwnerAndAccept {
-        InterfaseAirDrop(AirDropAddress).AirDrop (arrayAddresses, arrayValues);
+        InterfaceAirDrop(AirDropAddress).AirDrop (arrayAddresses, arrayValues);
     }
 
 }
